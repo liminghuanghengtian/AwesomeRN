@@ -17,7 +17,7 @@ const instructions = Platform.select({
 });
 
 type Props = {
-    name: 'Huangliming'
+    name: 'Huangxiaoming',
 };
 export default class App extends Component<Props> {
     constructor(props) {
