@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, TextInput} from 'react-native';
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -16,10 +16,17 @@ const instructions = Platform.select({
         'Shake or press menu button for dev menu',
 });
 
-type Props = {
-    name: 'Huangxiaoming',
-};
-export default class App extends Component<Props> {
+class Greeting extends Component {
+    render() {
+        return (
+            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                <Text>Hello {this.props.username}!</Text>
+            </View>
+        );
+    }
+}
+
+class Blink extends Component {
     constructor(props) {
         super(props);
         this.state = {showText: true};
@@ -34,12 +41,41 @@ export default class App extends Component<Props> {
 
     render() {
         // 根据当前showText的值决定是否显示text内容
-        let display = this.state.showText ? this.props.name : ' ';
+        let display = this.state.showText ? this.props.text : ' ';
+        return (
+            <Text>{display}</Text>
+        );
+    }
+}
+
+type Props = {}
+
+export default class App extends Component<Props> {
+    constructor(props) {
+        super(props);
+        this.state = {text: ''};
+    }
+
+    render() {
+        let pic = {
+            uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
+        };
         return (
             <View style={styles.container}>
-                <Text style={styles.welcome}>Welcome to React Native! {this.props.name}</Text>
-                <Text style={styles.instructions}>To get started, edit App.js {display}</Text>
+                <Image source={pic} style={{width: 193, height: 110}}/>
+                <Greeting username='Huangxiaoming'/>
+                <Blink text='Look at me look at me look at me'/>
+                <Text style={styles.welcome}>Welcome to React Native!</Text>
+                <Text style={styles.instructions}>To get started, edit App.js</Text>
                 <Text style={styles.instructions}>{instructions}</Text>
+                <TextInput
+                    style={{height: 40}}
+                    placeholder="Type here to translate!"
+                    onChangeText={(text) => this.setState({text})}
+                />
+                <Text style={{padding: 10, fontSize: 42}}>
+                    {this.state.text.split(' ').map((word) => word && '🍕').join(' ')}
+                </Text>
             </View>
         );
     }
