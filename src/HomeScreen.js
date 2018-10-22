@@ -7,7 +7,27 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TextInput} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, TextInput, Alert, Button} from 'react-native';
+import {StackActions, NavigationActions} from 'react-navigation';
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+    welcome: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 10,
+    },
+    instructions: {
+        textAlign: 'center',
+        color: '#333333',
+        marginBottom: 5,
+    },
+});
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -50,18 +70,59 @@ class Blink extends Component {
 
 type Props = {}
 
-export default class App extends Component<Props> {
+class HomeScreen extends Component<Props> {
     constructor(props) {
         super(props);
         this.state = {text: ''};
     }
 
+    _onPressButton() {
+        Alert.alert('You tapped the button!')
+    }
+
+    _onLongPressButton() {
+        Alert.alert('You long-pressed the button!')
+    }
+
+    static navigationOptions = {
+        title: 'Welcome',
+        headerStyle: {
+            backgroundColor: '#f4511e',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
+    };
+
     render() {
         let pic = {
             uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
         };
+        const {navigate} = this.props.navigation;
+
         return (
             <View style={styles.container}>
+                <Button
+                    title="Go to Jane's profile"
+                    onPress={() =>
+                        navigate('Details', {title: "Jane's 详情"})
+                    }
+                />
+
+                <Button
+                    title="Go to Details"
+                    onPress={() => {
+                        navigate('Details', {title: "详情"})
+                        // navigate.dispatch(StackActions.reset({
+                        //     index: 0,
+                        //     actions: [
+                        //         NavigationActions.navigate({routeName: 'Details'})
+                        //     ],
+                        // }))
+                    }}
+                />
+
                 <Image source={pic} style={{width: 193, height: 110}}/>
                 <Greeting username='Huangxiaoming'/>
                 <Blink text='Look at me look at me look at me'/>
@@ -73,6 +134,11 @@ export default class App extends Component<Props> {
                     placeholder="Type here to translate!"
                     onChangeText={(text) => this.setState({text})}
                 />
+                <Button
+                    onPress={this._onPressButton}
+                    title="Press Me"
+                    color="#841584"
+                />
                 <Text style={{padding: 10, fontSize: 42}}>
                     {this.state.text.split(' ').map((word) => word && '🍕').join(' ')}
                 </Text>
@@ -81,21 +147,4 @@ export default class App extends Component<Props> {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-});
+export default HomeScreen;
