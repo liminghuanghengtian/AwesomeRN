@@ -27,6 +27,10 @@ const styles = StyleSheet.create({
         color: '#333333',
         marginBottom: 5,
     },
+    button: {
+        margin: 10,
+        color: "#841584",
+    },
 });
 
 const instructions = Platform.select({
@@ -47,16 +51,23 @@ class Greeting extends Component {
 }
 
 class Blink extends Component {
+
     constructor(props) {
         super(props);
         this.state = {showText: true};
+        this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
         // 每1000毫秒对showText状态做一次取反操作
-        setInterval(() => {
+        this.timer = setInterval(() => {
             this.setState(previousState => {
                 return {showText: !previousState.showText};
             });
         }, 1000);
+    }
+
+    componentWillUnmount() {
+        console.log("componentWillUnmount", "1");
+        clearInterval(this.timer);
     }
 
     render() {
@@ -80,30 +91,33 @@ class HomeScreen extends Component<Props> {
         Alert.alert('You tapped the button!')
     }
 
-    _onLongPressButton() {
-        Alert.alert('You long-pressed the button!')
-    }
-
     static navigationOptions = {
         title: 'Welcome',
-        headerStyle: {
-            backgroundColor: '#f4511e',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-        },
+        // tabBarIcon: {focused: true, horizontal: true, tintColor: '#345db3'},
+        // tabBarColor: '#563f12',
+        // tabBarLabel: '主页',
+        // headerStyle: {
+        //     backgroundColor: '#f4511e',
+        // },
+        // headerTintColor: '#fff',
+        // headerTitleStyle: {
+        //     fontWeight: 'bold',
+        // },
     };
 
     render() {
+        // let只在块级作用域内有效，且
         let pic = {
             uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
         };
+        // 声明一个常量。复合类型的变量，变量名不指向数据，而是指向数据所在的地址
         const {navigate} = this.props.navigation;
 
         return (
             <View style={styles.container}>
+
                 <Button
+                    style={styles.button}
                     title="Go to Jane's profile"
                     onPress={() =>
                         navigate('Details', {title: "Jane's 详情"})
@@ -111,15 +125,16 @@ class HomeScreen extends Component<Props> {
                 />
 
                 <Button
+                    style={styles.button}
                     title="Go to Details"
                     onPress={() => {
-                        navigate('Details', {title: "详情"})
-                        // navigate.dispatch(StackActions.reset({
-                        //     index: 0,
-                        //     actions: [
-                        //         NavigationActions.navigate({routeName: 'Details'})
-                        //     ],
-                        // }))
+                        this.props.navigation.dispatch(StackActions.reset({
+                            index: 0,
+                            params: {},
+                            actions: [
+                                NavigationActions.navigate({routeName: 'Details'})
+                            ],
+                        }))
                     }}
                 />
 
@@ -135,9 +150,9 @@ class HomeScreen extends Component<Props> {
                     onChangeText={(text) => this.setState({text})}
                 />
                 <Button
+                    style={styles.button}
                     onPress={this._onPressButton}
                     title="Press Me"
-                    color="#841584"
                 />
                 <Text style={{padding: 10, fontSize: 42}}>
                     {this.state.text.split(' ').map((word) => word && '🍕').join(' ')}
